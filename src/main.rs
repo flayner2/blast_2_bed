@@ -44,6 +44,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         let new_name = format!("{}_{}", curr_name, counter);
 
         record.query = new_name;
+
+        if record.s_start > record.s_end {
+            let temp = record.s_start;
+            record.s_start = record.s_end;
+            record.s_end = temp;
+        }
+
         record.s_start -= 1;
 
         wrt.write_record(&[
