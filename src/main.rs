@@ -31,6 +31,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         .double_quote(false)
         .from_writer(io::stdout());
 
+    wrt.write_record(&["#subject", "s_start", "s_end", "query", "occ_count"])?;
+    wrt.flush()?;
+
     for result in rdr.deserialize() {
         let mut record: Record = result?;
 
@@ -49,7 +52,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         record.s_start -= 1;
 
-        wrt.write_record(&["#subject", "s_start", "s_end", "query", "occ_count"])?;
         wrt.write_record(&[
             record.subject,
             record.s_start.to_string(),
