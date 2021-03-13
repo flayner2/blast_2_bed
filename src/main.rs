@@ -41,10 +41,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             counter = 1;
         }
 
-        let new_name = format!("{}_{}", curr_name, counter);
-
-        record.query = new_name;
-
         if record.s_start > record.s_end {
             let temp = record.s_start;
             record.s_start = record.s_end;
@@ -53,11 +49,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         record.s_start -= 1;
 
+        wrt.write_record(&["#subject", "s_start", "s_end", "query", "occ_count"])?;
         wrt.write_record(&[
             record.subject,
             record.s_start.to_string(),
             record.s_end.to_string(),
             record.query,
+            counter.to_string(),
         ])?;
         wrt.flush()?;
     }
