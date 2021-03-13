@@ -14,9 +14,6 @@ struct Record {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut curr_name = String::new();
-    let mut counter = 1;
-
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .delimiter(b'\t')
@@ -31,18 +28,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         .double_quote(false)
         .from_writer(io::stdout());
 
-    wrt.write_record(&["#subject", "s_start", "s_end", "query", "occ_count"])?;
-    wrt.flush()?;
-
     for result in rdr.deserialize() {
         let mut record: Record = result?;
-
-        if curr_name == record.query {
-            counter += 1;
-        } else {
-            curr_name = String::from(&record.query);
-            counter = 1;
-        }
 
         if record.s_start > record.s_end {
             let temp = record.s_start;
@@ -57,7 +44,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             record.s_start.to_string(),
             record.s_end.to_string(),
             record.query,
-            counter.to_string(),
         ])?;
         wrt.flush()?;
     }
